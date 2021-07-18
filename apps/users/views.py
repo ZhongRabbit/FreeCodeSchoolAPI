@@ -12,7 +12,11 @@ class UserSerializer(serializers.ModelSerializer):
             'min_length': 8}}
 
     def create(self, validated_data):
-        return get_user_model().objects.create_user(**validated_data)
+        is_student = validated_data.pop('is_student')
+        user = get_user_model().objects.create_user(**validated_data)
+        user.is_student = is_student
+        user.save()
+        return user
 
 class UserViewSet(viewsets.ModelViewSet):
     queryset = get_user_model().objects.all()
